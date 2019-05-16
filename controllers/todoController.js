@@ -9,29 +9,45 @@ var todoSchema = new mongoose.Schema({
 
 var Todo = mongoose.model('Todo',todoSchema);
 
-var itemOne = Todo({item:"hello"}).save(function(err){
-    if(err) throw err ;
-    console.log('item saved')
-})
+// var itemOne = Todo({item:"hello"}).save(function(err){
+//     if(err) throw err ;
+//     console.log('item saved')
+// })
 
 
 var urlencodedParser = bodyParser.urlencoded({ extended: false });
 var jsonParser = bodyParser.json()
-var data = [{item:'abc'},{item:'pqr'},{item:'lmn'}];
+//var data = [{item:'abc'},{item:'pqr'},{item:'lmn'}];
 module.exports = function(app){
 
 app.get('/todo',function(req,res){
-res.send(data)
-})
+Todo.find({},function(err,data){
 
-app.post('/todo',jsonParser,function(req,res){
-   console.log(req.body)
-   data.push(req.body)
+   if (err) throw err;
    res.send(data)
    
 })
 
-app.put('/todo',function(req,res){
+})
+
+app.post('/todo',jsonParser,function(req,res){
+   var newTodo = Todo(req.body).save(function(err,data){
+if(err) throw err 
+res.send(data)
+console.log(req.body)
+
+   })
+   
+   
+})
+
+app.delete('/todo/:item',function(req,res){
+   Todo.find({item: req.params.item.replace(/\-/g," ")}).remove(function(err,data){
+
+      if (err) throw err 
+      res.send(data)
+      console.log(data)
+   })
     
 })
 };

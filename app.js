@@ -1,9 +1,13 @@
-var express = require('express')
+var express = require('express');
+var mongoose = require('mongoose');
+var bodyParser = require('body-parser');
+
 var todoController = require('./controllers/todoController')
-var authorController = require('./controllers/authorController')
+var authorRoutes = require('./routes/authorRoutes');
 var bookController = require('./controllers/bookController')
 
-var app = express()
+var app = express();
+app.use(bodyParser.json())
 
 // app.get('/',function(req,res){
 //     res.send("Hello world")
@@ -16,7 +20,9 @@ var app = express()
 
 //fire controller
 todoController(app);
-authorController(app);
+authorRoutes(app);
 bookController(app);
+
+mongoose.connect('mongodb://test:test123@ds157276.mlab.com:57276/todo');
 
 app.listen(2000)

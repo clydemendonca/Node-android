@@ -1,6 +1,4 @@
 var bodyParser = require('body-parser');
-var mongoose = require('mongoose');
-mongoose.connect('mongodb://test:test123@ds157276.mlab.com:57276/todo');
 
 var bookSchema = mongoose.Schema({
 
@@ -10,8 +8,6 @@ var bookSchema = mongoose.Schema({
 });
 
 var Book = mongoose.model('Book',bookSchema);
-
-var jsonParser = bodyParser.json();
 
 module.exports = function(app){
 
@@ -24,7 +20,7 @@ app.get('/books',function(req,res){
     })
 });
 
-app.post('/books',jsonParser,function(req,res){
+app.post('/books',function(req,res){
 
     var newBook = Book(req.body).save(function(err,data){
         if(err) throw err;

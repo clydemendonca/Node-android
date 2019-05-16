@@ -1,5 +1,6 @@
 var express = require('express')
 var todoController = require('./controllers/todoController')
+var authorController = require('./controllers/authorController')
 
 var app = express()
 
@@ -14,5 +15,6 @@ var app = express()
 
 //fire controller
 todoController(app);
+authorController(app);
 
 app.listen(2000)

@@ -1,37 +1,33 @@
-var autherSchema = new mongoose.Schema({
-    name:String
-})
+var Author = require('../models/authorModel');
 
-var Author = mongoose.model('Author',autherSchema);
+module.exports = {
 
-module.exports = function(app){
-    
-    app.get('/authors',function(req,res){
-        Author.find({},function(err,data){
+    createAuthor: function (nameValue) {
 
-            if (err) throw err;
-            res.send(data);
-
+        var promise = Author.create({
+            name: nameValue
         })
-     });
 
-     app.post('/authors', function(req,res){
+        return promise;
 
-        var newAuthor = Author(req.body).save(function(err,data){
-            if (err) throw err;
-            res.send(data)
-            console.log(data)
-        })
-     });
+    },
 
-     app.delete('/authors/:name',function(req,res){
+    getAuthors: function () {
 
-        Author.find({name: req.params.name.replace(/\-/g," ")}).remove(function(err,data){
+        var promise = Author.find({}).exec();
+        return promise;
 
-            if (err) throw err 
-            res.send(data)
-            console.log(data)
-     })
-});
+    },
+
+    deleteAuthor: function (name) {
+
+        var promise = Author
+            .find({ name: req.params.name.replace(/\-/g, " ") })
+            .remove()
+            .exec()
+
+        return promise;
+
+    }
 
 }

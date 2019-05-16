@@ -1,43 +1,50 @@
-var bodyParser = require('body-parser');
+var Book = require('../models/bookModel')
 
-var bookSchema = mongoose.Schema({
 
-    name:String,
-    authorId:mongoose.Types.ObjectId
+module.exports = {
 
-});
+getBooks: function(){
 
-var Book = mongoose.model('Book',bookSchema);
+    var promise = Book.find({}).exec();
+    return promise;
+}
+,
+createBook: function(BookObj)
+{
+    var promise = Book.create(BookObj)
 
-module.exports = function(app){
+    return promise;
+}
+,
 
-app.get('/books',function(req,res){
+deleteBook: function(id){
 
-    Book.find({},function(err,data){
+    var promise = Book
+            .findByIdAndDelete(id)
+            .exec()
 
-        res.send(data);
-        console.log(data);
-    })
-});
+        return promise;
 
-app.post('/books',function(req,res){
+}
 
-    var newBook = Book(req.body).save(function(err,data){
-        if(err) throw err;
-        res.send(data);
-        console.log(data)
+// app.post('/books',function(req,res){
 
-    })
-});
+//     var newBook = Book(req.body).save(function(err,data){
+//         if(err) throw err;
+//         res.send(data);
+//         console.log(data)
 
-app.delete('/books/:name',function(req,res){
+//     })
+// });
 
-    Book.find({name: req.params.name.replace(/\-/g," ")}).remove(function(err,data){
-        if(err) throw err;
-        res.send(data);
-        console.log(data);
-    })
-})
+// app.delete('/books/:name',function(req,res){
+
+//     Book.find({name: req.params.name.replace(/\-/g," ")}).remove(function(err,data){
+//         if(err) throw err;
+//         res.send(data);
+//         console.log(data);
+//     })
+// })
 
 
 }

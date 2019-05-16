@@ -27,14 +27,32 @@ module.exports = function (app) {
 
         var name = req.body.name;
 
-        if (name === null) {
+        var reg = new RegExp(/^\s*$/, 'g');
+
+        if (reg.test(name) || name === null || name === "") {
             res.send({
                 status: 'Error',
                 message: 'Name is required'
             })
+
         } else {
 
             var promise = authorController.createAuthor(name)
+            promise
+                .then(function (result) {
+                    res.send({
+                        status: 'Success',
+                        message: 'Successfully Add authors',
+                        authors: result
+                    })
+
+                })
+                .catch(function (err) {
+                    res.send({
+                        status: 'Error',
+                        message: 'Some error occured'
+                    })
+                })
 
         }
 

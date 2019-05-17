@@ -1,7 +1,9 @@
 var authorController = require('../controllers/authorController');
+var Author = require('../models/authorModel');
 
 module.exports = function (app) {
 
+    //get Authors
     app.get('/authors', function (req, res) {
 
         var promise = authorController.getAuthors();
@@ -23,6 +25,7 @@ module.exports = function (app) {
 
     });
 
+    //Add Author
     app.post('/authors', function (req, res) {
 
         var name = req.body.name;
@@ -58,6 +61,7 @@ module.exports = function (app) {
 
     });
 
+    //Delete Author
     app.delete('/authors/:name', function (req, res) {
 
         var name = req.params.name;
@@ -88,5 +92,44 @@ module.exports = function (app) {
         }
 
     });
+
+
+    //Delete Author with all his books
+    app.delete('/deleteAuthorWithBooks/:authorId',function(req,res){
+
+           var authorId = req.params.authorId;
+           var  promise =  authorController.deleteAuthorWithBooks(authorId);
+
+           promise
+           .then(function(result){
+
+           var promise = Author.findByIdAndDelete(authorId).exec();
+           promise
+           .then(function(result)
+           {
+
+            res.send({
+                status:'Successful',
+                message: 'Author deleted Successfull'
+            })
+           })
+
+
+
+           })
+           .catch(function(err){
+
+            res.send({
+
+                status:'Error',
+                message:'Some Error occured'
+            })
+            console.log(err)
+           })
+
+
+
+
+    })
 
 }

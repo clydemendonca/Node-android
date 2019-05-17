@@ -1,4 +1,5 @@
 var Author = require('../models/authorModel');
+var Book = require('../models/bookModel');
 
 module.exports = {
 
@@ -27,6 +28,14 @@ module.exports = {
             .exec()
 
         return promise;
+
+    }
+,
+    deleteAuthorWithBooks: function(authorId){
+
+     var promise = Book.findByIdAndDelete({authorId:authorId}).exec();
+     return promise ;
+
 
     }
 

@@ -4,6 +4,8 @@ var bodyParser = require('body-parser');
 
 var authorRoutes = require('./routes/authorRoutes');
 var bookRoutes = require('./routes/bookRoutes')
+var signupRoutes = require('./routes/signupRoutes');
+var loginRoutes = require('./routes/loginRoutes')
 
 var app = express();
 app.use(bodyParser.json())
@@ -21,6 +23,8 @@ app.use(bodyParser.json())
 //todoController(app);
 authorRoutes(app);
 bookRoutes(app);
+signupRoutes(app)
+loginRoutes(app)
 
 mongoose.connect('mongodb://test:test123@ds157276.mlab.com:57276/todo');
 

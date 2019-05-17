@@ -22,7 +22,7 @@ module.exports = {
     deleteAuthor: function (name) {
 
         var promise = Author
-            .find({ name: req.params.name.replace(/\-/g, " ") })
+            .find({name:name.replace(/\-/g, " ") })
             .remove()
             .exec()
 

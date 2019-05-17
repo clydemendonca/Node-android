@@ -1,51 +1,90 @@
 var Book = require('../models/bookModel')
+var Author = require('../models/authorModel');
+var Q = require('q')
 
 
 
 module.exports = {
 
-getBooks: function(){
+    getBooks: function () {
 
-    var promise = Book.find({}).exec();
-    return promise;
-}
-,
-createBook: function(BookObj)
-{
-    var promise = Book.create(BookObj)
+        var myBooks;
+        return Book.find({}).exec()
+            .then(function (books) {
+                myBooks = books;
+                var promises = [];
+                books.forEach(function (book) {
 
-    return promise;
-}
-,
+                    var promise = Author.findById(book.authorId).exec();
 
-deleteBook: function(id){
+                    promises.push(promise);
 
-    var promise = Book
+
+                });
+                var promiseForResult = Q.all(promises);
+                return promiseForResult;
+
+
+            })
+            .then(function (authors) {
+
+                var result = [];
+                for (var i = 0; i < authors.length; i++) {
+                    result.push({
+                        book_id: myBooks[i]._id,
+                        book_name: myBooks[i].name,
+                        author_name: authors[i].name
+
+
+                    })
+                }
+
+                console.log(authors)
+            return result;
+
+
+            })
+            .catch(function (err) {
+                console.log(err)
+
+            })
+    }
+    ,
+    createBook: function (BookObj) {
+        var promise = Book.create(BookObj)
+
+        return promise;
+    }
+    ,
+
+    deleteBook: function (id) {
+
+        var promise = Book
             .findByIdAndDelete(id)
             .exec()
 
         return promise;
 
-}
+    }
 
-// app.post('/books',function(req,res){
+    // app.post('/books',function(req,res){
 
-//     var newBook = Book(req.body).save(function(err,data){
-//         if(err) throw err;
-//         res.send(data);
-//         console.log(data)
+    //     var newBook = Book(req.body).save(function(err,data){
+    //         if(err) throw err;
+    //         res.send(data);
+    //         console.log(data)
 
-//     })
-// });
+    //     })
+    // });
 
-// app.delete('/books/:name',function(req,res){
+    // app.delete('/books/:name',function(req,res){
 
-//     Book.find({name: req.params.name.replace(/\-/g," ")}).remove(function(err,data){
-//         if(err) throw err;
-//         res.send(data);
-//         console.log(data);
-//     })
-// })
+    //     Book.find({name: req.params.name.replace(/\-/g," ")}).remove(function(err,data){
+    //         if(err) throw err;
+    //         res.send(data);
+    //         console.log(data);
+    //     })
+    // })
 
 
 }

@@ -1,5 +1,6 @@
 var Author = require('../models/authorModel');
 var Book = require('../models/bookModel');
+var Q = require('q');
 
 module.exports = {
 
@@ -23,18 +24,39 @@ module.exports = {
     deleteAuthor: function (name) {
 
         var promise = Author
-            .find({name:name.replace(/\-/g, " ") })
+            .find({ name: name.replace(/\-/g, " ") })
             .remove()
             .exec()
 
         return promise;
 
-    }
-,
-    deleteAuthorWithBooks: function(authorId){
+    },
 
-     var promise = Book.findByIdAndDelete({authorId:authorId}).exec();
-     return promise ;
+    deleteAuthorWithBooks: function (authorId) {
+
+       return Book.find({ authorId: authorId }).exec()
+            .then(function (books) {
+
+                var promises = [];
+
+                books.forEach(function (book) {
+
+                    var promise = Book.findByIdAndDelete(book._id);
+                    promises.push(promise);
+
+                });
+
+                var promiseResult = Q.all(promises);
+
+                return promiseResult;
+
+            })
+            .then(function (results) {
+
+                return Author.findByIdAndDelete(authorId);
+
+            })
+            
 
 
     }

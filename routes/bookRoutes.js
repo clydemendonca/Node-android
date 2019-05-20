@@ -13,7 +13,7 @@ module.exports = function(app){
         res.send({
             status:'Sucessfull',
             msg: 'sucessfully retrive Books',
-            books:result
+            book:result
 
         })
 
